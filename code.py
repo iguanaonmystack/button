@@ -44,7 +44,6 @@ kbd = Keyboard(usb_hid.devices)
 
 # For serial communications
 serial = usb_cdc.data
-print(serial)
 
 ######################### HELPERS ##############################
 
@@ -73,6 +72,7 @@ def wheel(pos):
 
 i = 0
 pressed = False
+flashing = 0
 while True:
     # spin internal LED around! autoshow is on
     #dot[0] = wheel(i & 255)
@@ -85,10 +85,15 @@ while True:
     #print("D0: %0.2f" % getVoltage(analog1in))
 
     # Cycle the LED hooked up to D2
-    if i < 128:
-        red.value = False
+    if flashing > 0:
+        print('flashing led', flashing, i, (i // 16), (i // 16) % 2)
+        if (i // 16) % 2:
+            red.value = False
+        else:
+            red.value = True
+            flashing -= 1
     else:
-        red.value = True
+        red.value = False
 
     # use D3 as capacitive touch to turn on internal LED
     #if touch.value:
@@ -99,6 +104,7 @@ while True:
         #print("Button on D0 pressed!")
         if not pressed:
             print("button keydown")
+            serial.write(b'BUTTON\n')
             pressed = True
     else:
         #print("Button on D0 not pressed!")
@@ -108,6 +114,13 @@ while True:
         if pressed:
             print("button keyup")
             pressed = False
+
+    # Check for incoming data
+    while serial.in_waiting > 0:
+        instruction = serial.readline()
+        print(instruction)
+        if instruction == b"FLASH\n":
+            flashing = 50
 
     i = (i+1) % 256  # run from 0 to 255
     time.sleep(0.01) # make bigger to slow down
