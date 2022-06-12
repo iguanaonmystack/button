@@ -69,7 +69,8 @@ i = 0
 pressed = False
 while True:
     # spin internal LED around! autoshow is on
-    dot[0] = wheel(i & 255)
+    #dot[0] = wheel(i & 255)
+    dot[0] = (128, 128, 128) if pressed else (128, 0, 0)
 
     # set analog output to 0-3.3V (0-65535 in increments)
     #aout.value = i * 256
