@@ -66,34 +66,42 @@ def wheel(pos):
 ######################### MAIN LOOP ##############################
 
 i = 0
+pressed = False
 while True:
-  # spin internal LED around! autoshow is on
-  dot[0] = wheel(i & 255)
+    # spin internal LED around! autoshow is on
+    dot[0] = wheel(i & 255)
 
-  # set analog output to 0-3.3V (0-65535 in increments)
-  #aout.value = i * 256
+    # set analog output to 0-3.3V (0-65535 in increments)
+    #aout.value = i * 256
 
-  # Read analog voltage on D0
-  #print("D0: %0.2f" % getVoltage(analog1in))
+    # Read analog voltage on D0
+    #print("D0: %0.2f" % getVoltage(analog1in))
 
-  # Cycle the LED hooked up to D2
-  if i < 128:
-      red.value = False
-  else:
-      red.value = True
+    # Cycle the LED hooked up to D2
+    if i < 128:
+        red.value = False
+    else:
+        red.value = True
 
-  # use D3 as capacitive touch to turn on internal LED
-  #if touch.value:
-  #    print("D3 touched!")
-  #led.value = touch.value
+    # use D3 as capacitive touch to turn on internal LED
+    #if touch.value:
+    #    print("D3 touched!")
+    #led.value = touch.value
 
-  if not button.value:
-      print("Button on D0 pressed!")
-  else:
-      print("Button on D0 not pressed!")
-      # optional! uncomment below & save to have it sent a keypress
-      #kbd.press(Keycode.A)
-      #kbd.release_all()
+    if not button.value:
+        #print("Button on D0 pressed!")
+        if not pressed:
+            print("button keydown")
+            pressed = True
+    else:
+        #print("Button on D0 not pressed!")
+        # optional! uncomment below & save to have it sent a keypress
+        #kbd.press(Keycode.A)
+        #kbd.release_all()
+        if pressed:
+            print("button keyup")
+            pressed = False
 
-  i = (i+1) % 256  # run from 0 to 255
-  #time.sleep(0.01) # make bigger to slow down
+    i = (i+1) % 256  # run from 0 to 255
+    time.sleep(0.01) # make bigger to slow down
+
