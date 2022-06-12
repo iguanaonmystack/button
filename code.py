@@ -5,10 +5,12 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 from analogio import AnalogOut, AnalogIn
 import touchio
+import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keycode import Keycode
 import adafruit_dotstar as dotstar
 import time
+import usb_cdc
 
 # One pixel connected internally!
 dot = dotstar.DotStar(board.APA102_SCK, board.APA102_MOSI, 1, brightness=0.2)
@@ -38,7 +40,11 @@ button.pull = Pull.UP
 #touch = touchio.TouchIn(board.D3)
 
 # Used if we do HID output, see below
-kbd = Keyboard()
+kbd = Keyboard(usb_hid.devices)
+
+# For serial communications
+serial = usb_cdc.data
+print(serial)
 
 ######################### HELPERS ##############################
 
