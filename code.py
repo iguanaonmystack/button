@@ -104,7 +104,7 @@ while True:
         #print("Button on D0 pressed!")
         if not pressed:
             print("button keydown")
-            serial.write(b'BUTTON\n')
+            serial.write(b'PRESS\n')
             pressed = True
     else:
         #print("Button on D0 not pressed!")
@@ -119,7 +119,11 @@ while True:
     while serial.in_waiting > 0:
         instruction = serial.readline()
         print(instruction)
-        if instruction == b"FLASH\n":
+        if instruction == b"BUTTON?\n":
+            # A very rudimentary handshake
+            serial.write(b'BUTTON!\n')
+        elif instruction == b"FLASH\n":
+            # Flash the LED a bit
             flashing = 50
 
     i = (i+1) % 256  # run from 0 to 255
